@@ -30,6 +30,9 @@
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Box2D.NetStandard.Common;
+#if UNITY_5_3_OR_NEWER
+using MathF = UnityEngine.Mathf;
+#endif
 
 namespace Box2D.NetStandard.Collision.Shapes
 {
@@ -454,6 +457,15 @@ namespace Box2D.NetStandard.Collision.Shapes
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public Vector2[] GetVertices() => m_vertices[..m_count];
+		//public Vector2[] GetVertices() => m_vertices[..m_count];
+		public Vector2[] GetVertices()
+		{
+			var rt = new Vector2[m_count];
+			for(int i = 0; i < m_count; i++)
+            {
+				rt[i] = m_vertices[m_count];
+            }
+			return rt;
+		}
 	}
 }

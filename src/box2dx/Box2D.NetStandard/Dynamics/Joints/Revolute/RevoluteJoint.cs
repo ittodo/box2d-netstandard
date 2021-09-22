@@ -46,6 +46,10 @@ using Box2D.NetStandard.Common;
 using Box2D.NetStandard.Dynamics.Bodies;
 using Box2D.NetStandard.Dynamics.World;
 using Math = Box2D.NetStandard.Common.Math;
+#if UNITY_5_3_OR_NEWER
+using MathF = UnityEngine.Mathf;
+#endif
+
 
 namespace Box2D.NetStandard.Dynamics.Joints.Revolute
 {
@@ -383,7 +387,11 @@ namespace Box2D.NetStandard.Dynamics.Joints.Revolute
 				float impulse = -m_axialMass * Cdot;
 				float oldImpulse = MotorTorque;
 				float maxImpulse = data.step.dt * m_maxMotorTorque;
+#if UNITY_5_3_OR_NEWER
+				MotorTorque = MathF.Clamp(MotorTorque + impulse, -maxImpulse, maxImpulse);
+#else
 				MotorTorque = System.Math.Clamp(MotorTorque + impulse, -maxImpulse, maxImpulse);
+#endif
 				impulse = MotorTorque - oldImpulse;
 
 				wA -= iA * impulse;
@@ -464,17 +472,29 @@ namespace Box2D.NetStandard.Dynamics.Joints.Revolute
 				if (MathF.Abs(UpperLimit - LowerLimit) < 2.0f * Settings.AngularSlop)
 					// Prevent large angular corrections
 				{
+#if UNITY_5_3_OR_NEWER
+					C = MathF.Clamp(angle - LowerLimit, -Settings.MaxAngularCorrection, Settings.MaxAngularCorrection);
+#else
 					C = System.Math.Clamp(angle - LowerLimit, -Settings.MaxAngularCorrection, Settings.MaxAngularCorrection);
+#endif
 				}
 				else if (angle < LowerLimit)
 					// Prevent large angular corrections and allow some slop.
 				{
+#if UNITY_5_3_OR_NEWER
+					C = MathF.Clamp(angle - LowerLimit + Settings.AngularSlop, -Settings.MaxAngularCorrection, 0.0f);
+#else
 					C = System.Math.Clamp(angle - LowerLimit + Settings.AngularSlop, -Settings.MaxAngularCorrection, 0.0f);
+#endif
 				}
 				else if (angle >= UpperLimit)
 					// Prevent large angular corrections and allow some slop.
 				{
+#if UNITY_5_3_OR_NEWER
+					C = MathF.Clamp(angle - UpperLimit - Settings.AngularSlop, 0.0f, Settings.MaxAngularCorrection);
+#else
 					C = System.Math.Clamp(angle - UpperLimit - Settings.AngularSlop, 0.0f, Settings.MaxAngularCorrection);
+#endif
 				}
 
 				float limitImpulse = -m_axialMass * C;

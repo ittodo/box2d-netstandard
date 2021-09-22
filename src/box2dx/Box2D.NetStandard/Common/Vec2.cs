@@ -41,7 +41,14 @@ namespace Box2D.NetStandard.Common
 
 		public override bool Equals(object obj) => obj is Vec2 other && Equals(other);
 
-		public override int GetHashCode() => HashCode.Combine(X, Y);
+		public override int GetHashCode()
+		{
+			int hashCode = -665186484;
+			hashCode = hashCode * -1521134295 + X.GetHashCode();
+			hashCode = hashCode * -1521134295 + Y.GetHashCode();
+			hashCode = hashCode * -1521134295 + IsValid.GetHashCode();
+			return hashCode;
+		}
 
 		[Obsolete("Warning: Implicit cast from Vec2 to System.Numerics.Vector2. You are advised to change your code to expect Vector2.")]
 		public static implicit operator Vector2(Vec2 src) => new Vector2(src.X, src.Y);
@@ -237,6 +244,6 @@ namespace Box2D.NetStandard.Common
 			}
 
 			return result;
-		}
-	}
+		}      
+    }
 }

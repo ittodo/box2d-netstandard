@@ -40,6 +40,9 @@ using Box2D.NetStandard.Dynamics.Joints.Mouse;
 using Box2D.NetStandard.Dynamics.Joints.Pulley;
 using Box2D.NetStandard.Dynamics.World.Callbacks;
 using Math = Box2D.NetStandard.Common.Math;
+#if UNITY_5_3_OR_NEWER
+using MathF = UnityEngine.Mathf;
+#endif
 
 namespace Box2D.NetStandard.Dynamics.World
 {
@@ -1145,29 +1148,31 @@ namespace Box2D.NetStandard.Dynamics.World
 
 		public void RayCast(RayCastCallback callback, in Vector2 point1, in Vector2 point2)
 		{
-			float internalCallback(RayCastInput input, int proxyId)
-			{
-				object userData = m_contactManager.m_broadPhase.GetUserData(proxyId);
-				var proxy = (FixtureProxy) userData;
-				Fixture fixture = proxy.fixture;
-				int index = proxy.childIndex;
-				bool hit = fixture.RayCast(out RayCastOutput output, input, index);
-
-				if (hit)
-				{
-					float fraction = output.fraction;
-					Vector2 point = (1f - fraction) * input.p1 + fraction * input.p2;
-					callback(fixture, point, output.normal, fraction);
-				}
-
-				return input.maxFraction;
-			}
+			
 
 			RayCastInput input;
 			input.maxFraction = 1.0f;
 			input.p1 = point1;
 			input.p2 = point2;
-			m_contactManager.m_broadPhase.RayCast(internalCallback, in input);
+			m_contactManager.m_broadPhase.RayCast((x,y)=> { return internalCallback(x, y, callback); }, in input);
+		}
+
+		private float internalCallback(RayCastInput input, int proxyId , RayCastCallback callback)
+		{
+			object userData = m_contactManager.m_broadPhase.GetUserData(proxyId);
+			var proxy = (FixtureProxy)userData;
+			Fixture fixture = proxy.fixture;
+			int index = proxy.childIndex;
+			bool hit = fixture.RayCast(out RayCastOutput output, input, index);
+
+			if (hit)
+			{
+				float fraction = output.fraction;
+				Vector2 point = (1f - fraction) * input.p1 + fraction * input.p2;
+				callback(fixture, point, output.normal, fraction);
+			}
+
+			return input.maxFraction;
 		}
 
 		private void DrawJoint(Joint joint)

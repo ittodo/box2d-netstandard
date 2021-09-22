@@ -191,17 +191,56 @@ namespace Box2D.NetStandard.Dynamics.Joints
 
 		internal static Joint Create(JointDef def)
 		{
-			return def switch
-			       {
-				       DistanceJointDef d  => new DistanceJoint(d),
-				       MouseJointDef d     => new MouseJoint(d),
-				       PrismaticJointDef d => new PrismaticJoint(d),
-				       RevoluteJointDef d  => new RevoluteJoint(d),
-				       PulleyJointDef d    => new PulleyJoint(d),
-				       GearJointDef d      => new GearJoint(d),
-				       WheelJointDef d     => new WheelJoint(d),
-				       WeldJointDef d     => new WeldJoint(d)
-			       };
+			if(def is DistanceJointDef distanceJointDef)
+            {
+				return new DistanceJoint(distanceJointDef);
+            }
+			if (def is MouseJointDef mouseJointDef)
+            {
+				return new MouseJoint(mouseJointDef);
+            }
+			if (def is PrismaticJointDef prismaticJointDef)
+			{
+				return new PrismaticJoint(prismaticJointDef);
+			}
+			if(def is RevoluteJointDef revoluteJointDef)
+            {
+				return new RevoluteJoint(revoluteJointDef);
+            }
+			if (def is PulleyJointDef pulleyJointDef)
+            {
+				return new PulleyJoint(pulleyJointDef);
+            }
+			if (def is GearJointDef gearJointDef)
+			{
+				return new GearJoint(gearJointDef);
+            }
+			if(def is WheelJointDef wheelJointDef)
+            {
+				return new WheelJoint(wheelJointDef);
+            }
+			if(def is WeldJointDef weldJointDef)
+			{
+				return new WeldJoint(weldJointDef);
+			}
+			return null;
+
+
+
+					  
+
+
+			//return def switch
+			//       {
+			//	       DistanceJointDef d  => new DistanceJoint(d),
+			//	       MouseJointDef d     => new MouseJoint(d),
+			//	       PrismaticJointDef d => new PrismaticJoint(d),
+			//	       RevoluteJointDef d  => new RevoluteJoint(d),
+			//	       PulleyJointDef d    => new PulleyJoint(d),
+			//	       GearJointDef d      => new GearJoint(d),
+			//	       WheelJointDef d     => new WheelJoint(d),
+			//	       WeldJointDef d     => new WeldJoint(d)
+			//       };
 		}
 
 		internal abstract void InitVelocityConstraints(in SolverData data);

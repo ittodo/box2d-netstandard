@@ -100,6 +100,9 @@ using Box2D.NetStandard.Common;
 using Box2D.NetStandard.Dynamics.Bodies;
 using Box2D.NetStandard.Dynamics.World;
 using Math = Box2D.NetStandard.Common.Math;
+#if UNITY_5_3_OR_NEWER
+using MathF = UnityEngine.Mathf;
+#endif
 
 namespace Box2D.NetStandard.Dynamics.Joints.Prismatic
 {
@@ -462,7 +465,12 @@ namespace Box2D.NetStandard.Dynamics.Joints.Prismatic
 				float impulse = m_axialMass * (m_motorSpeed - Cdot);
 				float oldImpulse = MotorForce;
 				float maxImpulse = data.step.dt * m_maxMotorForce;
+
+#if UNITY_5_3_OR_NEWER
+				MotorForce = MathF.Clamp(MotorForce + impulse, -maxImpulse, maxImpulse);
+#else
 				MotorForce = System.Math.Clamp(MotorForce + impulse, -maxImpulse, maxImpulse);
+#endif
 				impulse = MotorForce - oldImpulse;
 
 				Vector2 P = impulse * m_axis;

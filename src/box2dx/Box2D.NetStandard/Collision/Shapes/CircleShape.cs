@@ -29,6 +29,9 @@ using System;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using Box2D.NetStandard.Common;
+#if UNITY_5_3_OR_NEWER
+using MathF = UnityEngine.Mathf;
+#endif
 
 namespace Box2D.NetStandard.Collision.Shapes
 {

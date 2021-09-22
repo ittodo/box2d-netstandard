@@ -2,6 +2,9 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using Box2D.NetStandard.Common;
 using Box2D.NetStandard.Dynamics.World;
+#if UNITY_5_3_OR_NEWER
+using MathF = UnityEngine.Mathf;
+#endif
 
 namespace Box2D.NetStandard.Dynamics.Joints.Friction
 {
@@ -178,7 +181,11 @@ namespace Box2D.NetStandard.Dynamics.Joints.Friction
 
 				float oldImpulse = m_angularImpulse;
 				float maxImpulse = h * m_maxTorque;
+#if UNITY_5_3_OR_NEWER
+				m_angularImpulse = MathF.Clamp(m_angularImpulse + impulse, -maxImpulse, maxImpulse);
+#else
 				m_angularImpulse = System.Math.Clamp(m_angularImpulse + impulse, -maxImpulse, maxImpulse);
+#endif
 				impulse = m_angularImpulse - oldImpulse;
 
 				wA -= iA * impulse;

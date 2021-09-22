@@ -41,3 +41,5 @@ Generated\ Files/
 *.[Cc]ache
 # but keep track of directories ending in .cache
 !?*.[Cc]ache/
+*.meta
+/docs/out/build/x64-Debug

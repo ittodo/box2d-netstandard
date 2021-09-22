@@ -36,6 +36,9 @@ using Box2D.NetStandard.Dynamics.Bodies;
 using Box2D.NetStandard.Dynamics.Fixtures;
 using Box2D.NetStandard.Dynamics.World;
 using Math = System.Math;
+#if UNITY_5_3_OR_NEWER
+using MathF = UnityEngine.Mathf;
+#endif
 
 namespace Box2D.NetStandard.Dynamics.Contacts
 {
@@ -336,7 +339,11 @@ namespace Box2D.NetStandard.Dynamics.Contacts
 
 					// b2Clamp the accumulated force
 					float maxFriction = friction * vcp.normalImpulse;
+#if UNITY_5_3_OR_NEWER
+					float newImpulse = MathF.Clamp(vcp.tangentImpulse + lambda, -maxFriction, maxFriction);
+#else
 					float newImpulse = Math.Clamp(vcp.tangentImpulse + lambda, -maxFriction, maxFriction);
+#endif
 					lambda = newImpulse - vcp.tangentImpulse;
 					vcp.tangentImpulse = newImpulse;
 
@@ -638,9 +645,14 @@ namespace Box2D.NetStandard.Dynamics.Contacts
 					// Track max constraint error.
 					minSeparation = MathF.Min(minSeparation, separation);
 
+#if UNITY_5_3_OR_NEWER
 					// Prevent large corrections and allow slop.
-					float C = Math.Clamp(Settings.Baumgarte * (separation + Settings.LinearSlop), -Settings.MaxLinearCorrection,
+					float C = MathF.Clamp(Settings.Baumgarte * (separation + Settings.LinearSlop), -Settings.MaxLinearCorrection,
 					                     0.0f);
+#else
+					float C = Math.Clamp(Settings.Baumgarte * (separation + Settings.LinearSlop), -Settings.MaxLinearCorrection,
+										 0.0f);
+#endif
 
 					// Compute the effective mass.
 					float rnA = Vectex.Cross(rA, normal);
@@ -731,9 +743,15 @@ namespace Box2D.NetStandard.Dynamics.Contacts
 					// Track max constraint error.
 					minSeparation = MathF.Min(minSeparation, separation);
 
+#if UNITY_5_3_OR_NEWER
+					// Prevent large corrections and allow slop.
+					float C = MathF.Clamp(Settings.TOIBaumgarte * (separation + Settings.LinearSlop),
+					                     -Settings.MaxLinearCorrection, 0.0f);
+#else
 					// Prevent large corrections and allow slop.
 					float C = Math.Clamp(Settings.TOIBaumgarte * (separation + Settings.LinearSlop),
-					                     -Settings.MaxLinearCorrection, 0.0f);
+										 -Settings.MaxLinearCorrection, 0.0f);
+#endif
 
 					// Compute the effective mass.
 					float rnA = Vectex.Cross(rA, normal);

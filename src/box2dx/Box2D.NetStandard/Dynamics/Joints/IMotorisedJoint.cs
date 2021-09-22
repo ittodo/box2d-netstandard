@@ -4,7 +4,7 @@ namespace Box2D.NetStandard.Dynamics.Joints
 {
 	public interface IMotorisedJoint
 	{
-		public float MotorSpeed
+		float MotorSpeed
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get;
@@ -13,9 +13,9 @@ namespace Box2D.NetStandard.Dynamics.Joints
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public void SetMotorSpeed(float speed);
+		void SetMotorSpeed(float speed);
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public float GetMotorSpeed();
+		float GetMotorSpeed();
 	}
 }

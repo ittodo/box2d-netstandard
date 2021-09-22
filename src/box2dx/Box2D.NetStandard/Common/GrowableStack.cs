@@ -14,7 +14,7 @@ namespace Box2D.NetStandard.Common
     ///     You MUST call <see cref="Dispose"/> when you are done with this stack or else you will have a memory leak.
     /// </remarks>
     /// <typeparam name="T">The type of elements in the stack.</typeparam>
-    internal unsafe ref struct GrowableStack<T> where T : unmanaged
+    internal unsafe struct GrowableStack<T> : IDisposable where T : unmanaged 
     {
         // TODO: Switch to managed arrays for the on-heap alloc when we have .NET 5.
         // Because with .NET 5 we can use the Pinned Object Heap.
@@ -30,7 +30,7 @@ namespace Box2D.NetStandard.Common
         ///     <paramref name="stackSpace"/> MUST BE A PIECE OF PINNED MEMORY,
         ///     OR ELSE YOU HAVE A MASSIVE GC BUG ON YOUR HANDS.
         /// </remarks>
-        internal GrowableStack(Span<T> stackSpace)
+        internal GrowableStack(T[] stackSpace)
         {
             fixed (T* ap = stackSpace)
             {
@@ -42,7 +42,19 @@ namespace Box2D.NetStandard.Common
             _count = 0;
         }
 
-        internal void Dispose()
+        internal GrowableStack(T* stackSpace , int Length)
+        {
+            T* ap = stackSpace;
+            {
+                _stack = ap;
+            }
+
+            _capacity = Length;
+            _wasReallocated = false;
+            _count = 0;
+        }
+
+        public void Dispose()
         {
             if (_wasReallocated)
             {

@@ -36,6 +36,9 @@ using Box2D.NetStandard.Dynamics.Bodies;
 using Box2D.NetStandard.Dynamics.Fixtures;
 using Box2D.NetStandard.Dynamics.World.Callbacks;
 using Math = Box2D.NetStandard.Common.Math;
+#if UNITY_5_3_OR_NEWER
+using MathF = UnityEngine.Mathf;
+#endif
 
 namespace Box2D.NetStandard.Dynamics.Contacts
 {
@@ -296,26 +299,83 @@ namespace Box2D.NetStandard.Dynamics.Contacts
 		public static Contact Create(Fixture fixtureA, int indexA, Fixture fixtureB, int indexB)
 		{
 			int match = (fixtureA.Shape.ContactMatch << 2) + fixtureB.Shape.ContactMatch;
-			return (match switch
-			        {
-				        CircleCircle   => new CircleContact(fixtureA, indexA, fixtureB, indexB),
-				        CircleEdge     => new EdgeAndCircleContact(fixtureB, indexB, fixtureA, indexA),
-				        CirclePolygon  => new PolyAndCircleContact(fixtureB, indexB, fixtureA, indexA),
-				        CircleChain    => new ChainAndCircleContact(fixtureB, indexB, fixtureA, indexA),
-				        EdgeCircle     => new EdgeAndCircleContact(fixtureA, indexA, fixtureB, indexB),
-				        EdgeEdge       => null,
-				        EdgePolygon    => new EdgeAndPolygonContact(fixtureA, indexA, fixtureB, indexB),
-				        EdgeChain      => null,
-				        PolygonCircle  => new PolyAndCircleContact(fixtureA, indexA, fixtureB, indexB),
-				        PolygonEdge    => new EdgeAndPolygonContact(fixtureB, indexB, fixtureA, indexA),
-				        PolygonPolygon => new PolygonContact(fixtureA, indexA, fixtureB, indexB),
-				        PolygonChain   => new ChainAndPolygonContact(fixtureB, indexB, fixtureA, indexA),
-				        ChainCircle    => new ChainAndCircleContact(fixtureA, indexA, fixtureB, indexB),
-				        ChainEdge      => null,
-				        ChainPolygon   => new ChainAndPolygonContact(fixtureA, indexA, fixtureB, indexB),
-				        ChainChain     => null,
-				        _              => null
-			        })!;
+
+			Contact c = null;
+            switch (match)
+            {
+                case CircleCircle:
+                    c = new CircleContact(fixtureA, indexA, fixtureB, indexB);
+                    break;
+                case CircleEdge:
+					c = new EdgeAndCircleContact(fixtureB, indexB, fixtureA, indexA);
+                    break;
+                case CirclePolygon:
+                    c = new PolyAndCircleContact(fixtureB, indexB, fixtureA, indexA);
+                    break;
+                case CircleChain:
+                    c = new ChainAndCircleContact(fixtureB, indexB, fixtureA, indexA);
+                    break;
+                case EdgeCircle:
+                    c = new EdgeAndCircleContact(fixtureA, indexA, fixtureB, indexB);
+                    break;
+                case EdgeEdge:
+                    c = null;
+                    break;
+                case EdgePolygon:
+                    c = new EdgeAndPolygonContact(fixtureA, indexA, fixtureB, indexB);
+                    break;
+                case EdgeChain:
+                    c = null;
+                    break;
+                case PolygonCircle:
+                    c = new PolyAndCircleContact(fixtureA, indexA, fixtureB, indexB);
+                    break;
+                case PolygonEdge:
+                    c = new EdgeAndPolygonContact(fixtureB, indexB, fixtureA, indexA);
+                    break;
+                case PolygonPolygon:
+                    c = new PolygonContact(fixtureA, indexA, fixtureB, indexB);
+                    break;
+                case PolygonChain:
+                    c = new ChainAndPolygonContact(fixtureB, indexB, fixtureA, indexA);
+                    break;
+                case ChainCircle:
+                    new ChainAndCircleContact(fixtureA, indexA, fixtureB, indexB);
+                    break;
+                case ChainEdge:
+                    c = null;
+                    break;
+                case ChainPolygon:
+                    c = new ChainAndPolygonContact(fixtureA, indexA, fixtureB, indexB);
+                    break;
+                case ChainChain:
+                    c = null;
+                    break;
+
+
+            }
+			return c;
+
+           // return (match switch
+			        //{
+				       // CircleCircle   => new CircleContact(fixtureA, indexA, fixtureB, indexB),
+				       // CircleEdge     => new EdgeAndCircleContact(fixtureB, indexB, fixtureA, indexA),
+				       // CirclePolygon  => new PolyAndCircleContact(fixtureB, indexB, fixtureA, indexA),
+				       // CircleChain    => new ChainAndCircleContact(fixtureB, indexB, fixtureA, indexA),
+				       // EdgeCircle     => new EdgeAndCircleContact(fixtureA, indexA, fixtureB, indexB),
+				       // EdgeEdge       => null,
+				       // EdgePolygon    => new EdgeAndPolygonContact(fixtureA, indexA, fixtureB, indexB),
+				       // EdgeChain      => null,
+				       // PolygonCircle  => new PolyAndCircleContact(fixtureA, indexA, fixtureB, indexB),
+				       // PolygonEdge    => new EdgeAndPolygonContact(fixtureB, indexB, fixtureA, indexA),
+				       // PolygonPolygon => new PolygonContact(fixtureA, indexA, fixtureB, indexB),
+				       // PolygonChain   => new ChainAndPolygonContact(fixtureB, indexB, fixtureA, indexA),
+				       // ChainCircle    => new ChainAndCircleContact(fixtureA, indexA, fixtureB, indexB),
+				       // ChainEdge      => null,
+				       // ChainPolygon   => new ChainAndPolygonContact(fixtureA, indexA, fixtureB, indexB),
+				       // ChainChain     => null,
+				       // _              => null
+			        //})!;
 		}
 
 		public void Update(ContactListener listener)

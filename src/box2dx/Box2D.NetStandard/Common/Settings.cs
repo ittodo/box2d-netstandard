@@ -26,6 +26,9 @@
 */
 
 using System;
+#if UNITY_5_3_OR_NEWER
+using MathF = UnityEngine.Mathf;
+#endif
 
 namespace Box2D.NetStandard.Common
 {

@@ -48,6 +48,9 @@ using Box2D.NetStandard.Common;
 using Box2D.NetStandard.Dynamics.Bodies;
 using Box2D.NetStandard.Dynamics.World;
 using Math = Box2D.NetStandard.Common.Math;
+#if UNITY_5_3_OR_NEWER
+using MathF = UnityEngine.Mathf;
+#endif
 
 namespace Box2D.NetStandard.Dynamics.Joints.Wheel
 {
@@ -480,7 +483,11 @@ namespace Box2D.NetStandard.Dynamics.Joints.Wheel
 
 				float oldImpulse = m_motorImpulse;
 				float maxImpulse = data.step.dt * m_maxMotorTorque;
+#if UNITY_5_3_OR_NEWER
+				m_motorImpulse = MathF.Clamp(m_motorImpulse + impulse, -maxImpulse, maxImpulse);
+#else
 				m_motorImpulse = System.Math.Clamp(m_motorImpulse + impulse, -maxImpulse, maxImpulse);
+#endif
 				impulse = m_motorImpulse - oldImpulse;
 
 				wA -= iA * impulse;

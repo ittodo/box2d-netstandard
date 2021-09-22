@@ -45,6 +45,9 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using Box2D.NetStandard.Common;
 using Box2D.NetStandard.Dynamics.World;
+#if UNITY_5_3_OR_NEWER
+using MathF = UnityEngine.Mathf;
+#endif
 
 namespace Box2D.NetStandard.Dynamics.Joints.Distance
 {
@@ -266,7 +269,12 @@ namespace Box2D.NetStandard.Dynamics.Joints.Distance
 			float length = u.Length();
 			u = Vector2.Normalize(u);
 			float C = length - m_length;
+
+#if UNITY_5_3_OR_NEWER
+			C = MathF.Clamp(C, -Settings.MaxLinearCorrection, Settings.MaxLinearCorrection);
+#else
 			C = System.Math.Clamp(C, -Settings.MaxLinearCorrection, Settings.MaxLinearCorrection);
+#endif
 
 			float impulse = -m_mass * C;
 			Vector2 P = impulse * u;

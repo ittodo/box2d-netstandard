@@ -153,6 +153,9 @@ using Box2D.NetStandard.Dynamics.Contacts;
 using Box2D.NetStandard.Dynamics.Joints;
 using Box2D.NetStandard.Dynamics.World.Callbacks;
 using Math = System.Math;
+#if UNITY_5_3_OR_NEWER
+using MathF = UnityEngine.Mathf;
+#endif
 
 namespace Box2D.NetStandard.Dynamics.World
 {

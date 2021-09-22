@@ -6,6 +6,9 @@ using Box2D.NetStandard.Dynamics.World;
 using b2Vec2 = System.Numerics.Vector2;
 using b2Vec3 = System.Numerics.Vector3;
 using Math = Box2D.NetStandard.Common.Math;
+#if UNITY_5_3_OR_NEWER
+using MathF = UnityEngine.Mathf;
+#endif
 
 namespace Box2D.NetStandard.Dynamics.Joints.Weld
 {
